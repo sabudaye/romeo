@@ -10,7 +10,7 @@ defmodule Romeo.Roster.Parser do
     stanza |> Romeo.XML.subelement("query") |> parse
   end
   def parse(xmlel(name: "query") = stanza) do
-    stanza |> Romeo.XML.subelements("item") |> Enum.map(&(parse(&1))) |> Enum.reverse
+    stanza |> Romeo.XML.subelements("item") |> Enum.map(&parse/1) |> Enum.reverse
   end
   def parse(xmlel(name: "item", attrs: attrs) = stanza) do
     struct(Item, parse_attrs(attrs))
