@@ -4,6 +4,7 @@ defmodule Romeo.Stanza.Parser do
   """
   use Romeo.XML
   import Romeo.XML
+  import Romeo.AttributeParser
 
   def parse(xmlel(name: "message", attrs: attrs) = stanza) do
     struct(Message, parse_attrs(attrs))
@@ -35,22 +36,6 @@ defmodule Romeo.Stanza.Parser do
   def parse(xmlcdata(content: content)), do: content
 
   def parse(stanza), do: stanza
-
-  defp parse_attrs([]), do: []
-  defp parse_attrs(attrs) do
-    parse_attrs(attrs, [])
-  end
-  defp parse_attrs([{k,v}|rest], acc) do
-    parse_attrs(rest, [parse_attr({k,v})|acc])
-  end
-  defp parse_attrs([], acc), do: acc
-
-  defp parse_attr({key, value}) when key in ["to", "from", "jid"] do
-    {String.to_atom(key), Romeo.JID.parse(value)}
-  end
-  defp parse_attr({key, value}) do
-    {String.to_atom(key), value}
-  end
 
   defp get_body(stanza), do: subelement(stanza, "body") |> cdata
   defp get_html(stanza), do: subelement(stanza, "html")
