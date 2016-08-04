@@ -1,10 +1,10 @@
-defmodule Romeo.Roster.Parser do
+defmodule Romeo.Stanza.Roster.Parser do
   @moduledoc """
   Parses XML records into related structs.
   """
   use Romeo.XML
   import Romeo.XML
-  import Romeo.AttributeParser
+  import Romeo.Stanza.AttributeParser
 
   def parse(xmlel(name: "iq") = stanza) do
     stanza |> Romeo.XML.subelement("query") |> parse

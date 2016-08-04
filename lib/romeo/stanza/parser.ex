@@ -4,7 +4,7 @@ defmodule Romeo.Stanza.Parser do
   """
   use Romeo.XML
   import Romeo.XML
-  import Romeo.AttributeParser
+  import Romeo.Stanza.AttributeParser
 
   def parse(xmlel(name: "message", attrs: attrs) = stanza) do
     struct(Message, parse_attrs(attrs))

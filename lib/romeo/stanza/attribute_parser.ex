@@ -1,4 +1,4 @@
-defmodule Romeo.AttributeParser do
+defmodule Romeo.Stanza.AttributeParser do
 
   use Romeo.XML
   import Romeo.XML
