@@ -32,6 +32,15 @@ defmodule Romeo.Roster do
       _ -> :error
     end
   end
+  def add(pid, jid, name) do
+    Logger.info fn -> "Adding #{jid} to roster items" end
+    stanza = Stanza.set_to_roster(jid, "both", name)
+    case send_stanza(pid, stanza) do
+      {:ok, _} -> :ok
+      _ -> :error
+    end
+  end
+
 
   @doc """
   Removes jid to roster
