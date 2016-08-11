@@ -91,10 +91,7 @@ defmodule Romeo.Connection do
 
   def disconnect(info, %{socket: socket, transport: transport} = conn) do
     transport.disconnect(info, socket)
-    case info do
-      {:close, from} -> Connection.reply(from, :ok)
-      _ -> {:connect, :reconnect, reset_connection(conn)}
-    end
+    {:connect, :reconnect, reset_connection(conn)}
   end
 
   defp reset_connection(conn) do
@@ -112,8 +109,9 @@ defmodule Romeo.Connection do
         {:disconnect, error, error, conn}
     end
   end
-  def handle_call(:close, from, conn) do
-    {:disconnect, {:close, from}, conn}
+  def handle_call(:close, from, %{socket: socket, transport: transport} = conn) do
+    transport.disconnect({:close, from}, socket)
+    {:reply, :ok, conn}
   end
 
   def handle_info(info, %{owner: owner, transport: transport} = conn) do
