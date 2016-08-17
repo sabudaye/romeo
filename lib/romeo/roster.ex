@@ -16,7 +16,7 @@ defmodule Romeo.Roster do
     Logger.info fn -> "Getting roster items" end
     stanza = Stanza.get_roster
     case send_stanza(pid, stanza) do
-      {:ok, %IQ{type: "result"} = result} -> Romeo.Stanza.Roster.Parser.parse(result.xml)
+      {:ok, %IQ{type: "result"} = result} -> result.items
       _ -> :error
     end
   end
@@ -26,7 +26,7 @@ defmodule Romeo.Roster do
   """
   def add(pid, jid) do
     Logger.info fn -> "Adding #{jid} to roster items" end
-    stanza = Stanza.set_to_roster(jid)
+    stanza = Stanza.set_roster_item(jid)
     case send_stanza(pid, stanza) do
       {:ok, _} -> :ok
       _ -> :error
@@ -34,7 +34,7 @@ defmodule Romeo.Roster do
   end
   def add(pid, jid, name) do
     Logger.info fn -> "Adding #{jid} to roster items" end
-    stanza = Stanza.set_to_roster(jid, "both", name)
+    stanza = Stanza.set_roster_item(jid, "both", name)
     case send_stanza(pid, stanza) do
       {:ok, _} -> :ok
       _ -> :error
@@ -47,7 +47,7 @@ defmodule Romeo.Roster do
   """
   def remove(pid, jid) do
     Logger.info fn -> "Removing #{jid} from roster items" end
-    stanza = Stanza.set_to_roster(jid, "remove")
+    stanza = Stanza.set_roster_item(jid, "remove")
     case send_stanza(pid, stanza) do
       {:ok, _} -> :ok
       _ -> :error
@@ -55,10 +55,12 @@ defmodule Romeo.Roster do
   end
 
   defp send_stanza(pid, stanza) do
+    id = Romeo.XML.attr(stanza, "id")
     :ok = Conn.send(pid, stanza)
+
     receive do
-      {:stanza, %IQ{type: "result"} = result} -> {:ok, result}
-      {:stanza, %IQ{type: "error"}} -> :error
+      {:stanza, %IQ{type: "result", id: ^id} = result} -> {:ok, result}
+      {:stanza, %IQ{type: "error", id: ^id}} -> :error
     after @timeout ->
       {:error, :timeout}
     end

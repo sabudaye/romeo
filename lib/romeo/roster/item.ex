@@ -1,8 +1,4 @@
-defmodule Item do
-  use Romeo.XML
-
-  alias Romeo.Item
-
+defmodule Romeo.Roster.Item do
   @type jid :: Romeo.JID.t
 
   @type t :: %__MODULE__{

@@ -151,7 +151,7 @@ defmodule Romeo.Stanza do
     iq("get", xmlel(name: "query", attrs: [{"xmlns", ns_roster}]))
   end
 
-  def set_to_roster(jid, subscription \\ "both", name \\ "", group \\ "") do
+  def set_roster_item(jid, subscription \\ "both", name \\ "", group \\ "") do
     name_to_set = case name do
       "" -> Romeo.JID.parse(jid).user
       _ -> name

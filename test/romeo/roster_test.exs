@@ -6,6 +6,8 @@ defmodule Romeo.RosterTest do
 
   import Romeo.Roster
 
+  alias Romeo.Roster.Item
+
   setup do
     romeo  = build_user("romeo", tls: true)
     juliet = build_user("juliet", resource: "juliet", tls: true)
